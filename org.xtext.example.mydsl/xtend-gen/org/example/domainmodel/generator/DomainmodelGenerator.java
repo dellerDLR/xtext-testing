@@ -55,10 +55,9 @@ public class DomainmodelGenerator extends AbstractGenerator {
         _builder.newLineIfNotEmpty();
       }
     }
-    _builder.append("\t\t    ");
     _builder.append("public class ");
     String _name = e.getName();
-    _builder.append(_name, "\t\t    ");
+    _builder.append(_name);
     _builder.append(" ");
     {
       Entity _superType = e.getSuperType();
@@ -66,7 +65,7 @@ public class DomainmodelGenerator extends AbstractGenerator {
       if (_tripleNotEquals_1) {
         _builder.append("extends ");
         QualifiedName _fullyQualifiedName_2 = this._iQualifiedNameProvider.getFullyQualifiedName(e.getSuperType());
-        _builder.append(_fullyQualifiedName_2, "\t\t    ");
+        _builder.append(_fullyQualifiedName_2);
         _builder.append(" ");
       }
     }

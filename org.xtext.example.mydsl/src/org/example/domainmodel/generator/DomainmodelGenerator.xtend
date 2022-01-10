@@ -11,6 +11,7 @@ import org.example.domainmodel.domainmodel.Entity
 import com.google.inject.Inject
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.example.domainmodel.domainmodel.Feature
+import org.eclipse.xtext.validation.Check
 
 /**
  * Generates code from your model files on save.
@@ -42,7 +43,7 @@ class DomainmodelGenerator extends AbstractGenerator {
 	    «IF e.eContainer.fullyQualifiedName !== null»
 	    package «e.eContainer.fullyQualifiedName»;
         «ENDIF»
-		    public class «e.name» «IF e.superType !== null »extends «e.superType.fullyQualifiedName» «ENDIF»{
+	    public class «e.name» «IF e.superType !== null »extends «e.superType.fullyQualifiedName» «ENDIF»{
 		    	«FOR f : e.features»
 	    	    «f.compile»
 	            «ENDFOR»
@@ -61,5 +62,8 @@ class DomainmodelGenerator extends AbstractGenerator {
     	}
 
     	'''
+
+
+  
     	
 }
