@@ -7,12 +7,16 @@ import com.google.inject.Inject;
 import org.eclipse.xtext.testing.InjectWith;
 import org.eclipse.xtext.testing.extensions.InjectionExtension;
 import org.eclipse.xtext.testing.util.ParseHelper;
+import org.eclipse.xtext.testing.validation.ValidationTestHelper;
 import org.eclipse.xtext.xbase.lib.Exceptions;
+import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.example.domainmodel.domainmodel.AbstractElement;
 import org.example.domainmodel.domainmodel.Domainmodel;
+import org.example.domainmodel.domainmodel.DomainmodelPackage;
 import org.example.domainmodel.domainmodel.Entity;
 import org.example.domainmodel.domainmodel.Feature;
+import org.example.domainmodel.validation.DomainmodelValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +28,9 @@ public class DomainmodelParsingTest {
   @Inject
   private ParseHelper<Domainmodel> parseHelper;
   
+  @Inject
+  private ValidationTestHelper validationTestHelper;
+  
   @Test
   public void parseDomainmodel() {
     try {
@@ -32,6 +39,49 @@ public class DomainmodelParsingTest {
       AbstractElement _head = IterableExtensions.<AbstractElement>head(model.getElements());
       final Entity entity = ((Entity) _head);
       Assertions.assertSame(entity, IterableExtensions.<Feature>head(entity.getFeatures()).getType());
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testNameStartsWithCapitalWarning() {
+    try {
+      final Domainmodel entity = this.parseHelper.parse(
+        "entity myEntity {\r\n\t             parent: myEntity\r\n\t         }");
+      this.validationTestHelper.assertWarning(entity, 
+        DomainmodelPackage.Literals.ENTITY, 
+        DomainmodelValidator.INVALID_NAME, 
+        "Name should start with a capital");
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Inject
+  @Extension
+  private ParseHelper<Domainmodel> _parseHelper;
+  
+  @Inject
+  @Extension
+  private ValidationTestHelper _validationTestHelper;
+  
+  @Test
+  public void parseDomainmodelInjected() {
+    try {
+      this._validationTestHelper.assertNoIssues(this._parseHelper.parse("entity MyEntity {\r\n\t         parent: MyEntity\r\n\t         }"));
+    } catch (Throwable _e) {
+      throw Exceptions.sneakyThrow(_e);
+    }
+  }
+  
+  @Test
+  public void testNameStartsWithCapitalWarningInjected() {
+    try {
+      this._validationTestHelper.assertWarning(this._parseHelper.parse("entity myEntity {\r\n\t             parent: myEntity\r\n\t         }"), 
+        DomainmodelPackage.Literals.ENTITY, 
+        DomainmodelValidator.INVALID_NAME, 
+        "Name should start with a capital");
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
