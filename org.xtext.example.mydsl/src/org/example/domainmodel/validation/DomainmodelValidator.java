@@ -6,6 +6,9 @@ package org.example.domainmodel.validation;
 import org.eclipse.xtext.validation.Check;
 import org.example.domainmodel.domainmodel.DomainmodelPackage;
 import org.example.domainmodel.domainmodel.Entity;
+import org.example.domainmodel.domainmodel.Feature;
+
+import com.google.common.base.Objects;
 
 /**
  * This class contains custom validation rules. 
@@ -24,5 +27,19 @@ public class DomainmodelValidator extends AbstractDomainmodelValidator {
 	            INVALID_NAME);
 	    }
 	}
+	
+    @Check
+    public void checkFeatureNameIsUnique(Feature feature) {
+        Entity superEntity = ((Entity) feature.eContainer()).getSuperType();
+        while (superEntity != null) {
+            for (Feature other : superEntity.getFeatures()) {
+                if (Objects.equal(feature.getName(), other.getName())) {
+                    error("Feature names have to be unique", DomainmodelPackage.Literals.FEATURE__NAME);
+                    return;
+                }
+            }
+            superEntity = superEntity.getSuperType();
+        }
+    }
 	
 }
