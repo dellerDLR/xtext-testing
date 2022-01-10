@@ -11,6 +11,7 @@ import org.example.domainmodel.domainmodel.Domainmodel
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.^extension.ExtendWith
+import org.example.domainmodel.domainmodel.Entity
 
 @ExtendWith(InjectionExtension)
 @InjectWith(DomainmodelInjectorProvider)
@@ -18,13 +19,14 @@ class DomainmodelParsingTest {
 	@Inject
 	ParseHelper<Domainmodel> parseHelper
 	
-	@Test
-	def void loadModel() {
-		val result = parseHelper.parse('''
-			Hello Xtext!
-		''')
-		Assertions.assertNotNull(result)
-		val errors = result.eResource.errors
-		Assertions.assertTrue(errors.isEmpty, '''Unexpected errors: «errors.join(", ")»''')
-	}
+	
+	     @Test 
+     def void parseDomainmodel() {
+         val model = parseHelper.parse(
+             "entity MyEntity {
+                 parent: MyEntity
+             }")
+         val entity = model.elements.head as Entity
+         Assertions.assertSame(entity, entity.features.head.type)
+     }
 }
