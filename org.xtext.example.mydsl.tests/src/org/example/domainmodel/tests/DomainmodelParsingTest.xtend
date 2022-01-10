@@ -15,6 +15,7 @@ import org.example.domainmodel.domainmodel.Entity
 import org.eclipse.xtext.testing.validation.ValidationTestHelper
 import org.example.domainmodel.domainmodel.DomainmodelPackage
 import org.example.domainmodel.validation.DomainmodelValidator
+import org.eclipse.xtext.xbase.testing.CompilationTestHelper
 
 @ExtendWith(InjectionExtension)
 @InjectWith(DomainmodelInjectorProvider)
@@ -66,4 +67,33 @@ class DomainmodelParsingTest {
 	             "Name should start with a capital"
 	         )
 	     }
+	     
+	     
+	    @Inject extension CompilationTestHelper
+     
+     	@Test def test() {
+         '''
+             datatype String
+    			
+             package my.company.blog {
+                 entity Blog {
+                     title: String
+                 }
+             }
+         '''.assertCompilesTo('''
+             package my.company.blog;
+     
+             public class Blog {
+                 private String title;
+    				
+                 public String getTitle() {
+                     return title;
+                 }
+    				
+                 public void setTitle(String title) {
+                     this.title = title;
+                 }
+             }
+         ''')
+         }
 }
