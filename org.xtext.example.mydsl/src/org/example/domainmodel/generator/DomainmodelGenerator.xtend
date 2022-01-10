@@ -20,50 +20,39 @@ import org.eclipse.xtext.validation.Check
  */
 
 class DomainmodelGenerator extends AbstractGenerator {
-	 @Inject extension IQualifiedNameProvider
-
-	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-//		fsa.generateFile('greetings.txt', 'People to greet: ' + 
-//			resource.allContents
-//				.filter(Greeting)
-//				.map[name]
-//				.join(', '))
-
-
-    for (e : resource.allContents.toIterable.filter(Entity)) {
-    	fsa.generateFile(
-    			e.fullyQualifiedName.toString("/") + ".java",
-    			e.compile
-    	)
-                
+ 
+    @Inject extension IQualifiedNameProvider
+ 
+    override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+        for (e : resource.allContents.toIterable.filter(Entity)) {
+            fsa.generateFile(
+                e.fullyQualifiedName.toString("/") + ".java",
+                e.compile)
         }
-	}
-	
-	    private def compile(Entity e) '''
-	    «IF e.eContainer.fullyQualifiedName !== null»
-	    package «e.eContainer.fullyQualifiedName»;
+    }
+ 
+    private def compile(Entity e) '''
+        «IF e.eContainer.fullyQualifiedName !== null»
+            package «e.eContainer.fullyQualifiedName»;
         «ENDIF»
-	    public class «e.name» «IF e.superType !== null »extends «e.superType.fullyQualifiedName» «ENDIF»{
-		    	«FOR f : e.features»
-	    	    «f.compile»
-	            «ENDFOR»
-	            }
-	    }
-	    
-    	'''
-    	
-    	private def compile(Feature f) '''
-    	private «f.type.fullyQualifiedName» «f.name»;
-    	public «f.type.fullyQualifiedName» get«f.name.toFirstUpper»() {
-    		return «f.name»;
-    		}
-    	public void set«f.name.toFirstUpper»(«f.type.fullyQualifiedName» «f.name») {
-    	this.«f.name» = «f.name»;
-    	}
-
-    	'''
-
-
-  
-    	
+        
+        public class «e.name» «IF e.superType !== null
+                »extends «e.superType.fullyQualifiedName» «ENDIF»{
+            «FOR f : e.features»
+                «f.compile»
+            «ENDFOR»
+        }
+    '''
+ 
+    private def compile(Feature f) '''
+        private «f.type.fullyQualifiedName» «f.name»;
+        
+        public «f.type.fullyQualifiedName» get«f.name.toFirstUpper»() {
+            return «f.name»;
+        }
+        
+        public void set«f.name.toFirstUpper»(«f.type.fullyQualifiedName» «f.name») {
+            this.«f.name» = «f.name»;
+        }
+    '''
 }

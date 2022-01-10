@@ -37,7 +37,7 @@ public class DomainmodelParsingTest {
   public void parseDomainmodel() {
     try {
       final Domainmodel model = this.parseHelper.parse(
-        "entity MyEntity {\r\n                 parent: MyEntity\r\n             }");
+        "entity MyEntity {\r\n             parent: MyEntity\r\n         }");
       AbstractElement _head = IterableExtensions.<AbstractElement>head(model.getElements());
       final Entity entity = ((Entity) _head);
       Assertions.assertSame(entity, IterableExtensions.<Feature>head(entity.getFeatures()).getType());
@@ -50,7 +50,7 @@ public class DomainmodelParsingTest {
   public void testNameStartsWithCapitalWarning() {
     try {
       final Domainmodel entity = this.parseHelper.parse(
-        "entity myEntity {\r\n\t             parent: myEntity\r\n\t         }");
+        "entity myEntity {\r\n             parent: myEntity\r\n         }");
       this.validationTestHelper.assertWarning(entity, 
         DomainmodelPackage.Literals.ENTITY, 
         DomainmodelValidator.INVALID_NAME, 
@@ -71,7 +71,7 @@ public class DomainmodelParsingTest {
   @Test
   public void parseDomainmodelInjected() {
     try {
-      this._validationTestHelper.assertNoIssues(this._parseHelper.parse("entity MyEntity {\r\n\t         parent: MyEntity\r\n\t         }"));
+      this._validationTestHelper.assertNoIssues(this._parseHelper.parse("entity MyEntity {\r\n         parent: MyEntity\r\n         }"));
     } catch (Throwable _e) {
       throw Exceptions.sneakyThrow(_e);
     }
@@ -80,7 +80,7 @@ public class DomainmodelParsingTest {
   @Test
   public void testNameStartsWithCapitalWarningInjected() {
     try {
-      this._validationTestHelper.assertWarning(this._parseHelper.parse("entity myEntity {\r\n\t             parent: myEntity\r\n\t         }"), 
+      this._validationTestHelper.assertWarning(this._parseHelper.parse("entity myEntity {\r\n             parent: myEntity\r\n         }"), 
         DomainmodelPackage.Literals.ENTITY, 
         DomainmodelValidator.INVALID_NAME, 
         "Name should start with a capital");
@@ -99,7 +99,6 @@ public class DomainmodelParsingTest {
       StringConcatenation _builder = new StringConcatenation();
       _builder.append("datatype String");
       _builder.newLine();
-      _builder.append("    \t\t\t");
       _builder.newLine();
       _builder.append("package my.company.blog {");
       _builder.newLine();
@@ -117,14 +116,13 @@ public class DomainmodelParsingTest {
       StringConcatenation _builder_1 = new StringConcatenation();
       _builder_1.append("package my.company.blog;");
       _builder_1.newLine();
-      _builder_1.append("     ");
       _builder_1.newLine();
       _builder_1.append("public class Blog {");
       _builder_1.newLine();
       _builder_1.append("    ");
       _builder_1.append("private String title;");
       _builder_1.newLine();
-      _builder_1.append("    \t\t\t\t");
+      _builder_1.append("    ");
       _builder_1.newLine();
       _builder_1.append("    ");
       _builder_1.append("public String getTitle() {");
@@ -135,7 +133,7 @@ public class DomainmodelParsingTest {
       _builder_1.append("    ");
       _builder_1.append("}");
       _builder_1.newLine();
-      _builder_1.append("    \t\t\t\t");
+      _builder_1.append("    ");
       _builder_1.newLine();
       _builder_1.append("    ");
       _builder_1.append("public void setTitle(String title) {");

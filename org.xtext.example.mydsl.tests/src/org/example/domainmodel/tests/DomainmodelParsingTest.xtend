@@ -23,77 +23,77 @@ class DomainmodelParsingTest {
 	@Inject ParseHelper<Domainmodel> parseHelper
 	@Inject ValidationTestHelper validationTestHelper
 	
-	     @Test 
-     	def void parseDomainmodel() {
-         val model = parseHelper.parse(
-             "entity MyEntity {
-                 parent: MyEntity
-             }")
-         val entity = model.elements.head as Entity
-         Assertions.assertSame(entity, entity.features.head.type)
+    @Test 
+ 	def void parseDomainmodel() {
+     val model = parseHelper.parse(
+         "entity MyEntity {
+             parent: MyEntity
+         }")
+     val entity = model.elements.head as Entity
+     Assertions.assertSame(entity, entity.features.head.type)
      }
      
-      	@Test
- 		def testNameStartsWithCapitalWarning() {
-	     	val entity = parseHelper.parse(
-	         "entity myEntity {
-	             parent: myEntity
-	         }")
-		     validationTestHelper.assertWarning(entity,
-		         DomainmodelPackage.Literals.ENTITY,
-		         DomainmodelValidator.INVALID_NAME,
-		         "Name should start with a capital"
+  	@Test
+	def testNameStartsWithCapitalWarning() {
+     	val entity = parseHelper.parse(
+         "entity myEntity {
+             parent: myEntity
+         }")
+	     validationTestHelper.assertWarning(entity,
+	         DomainmodelPackage.Literals.ENTITY,
+	         DomainmodelValidator.INVALID_NAME,
+	         "Name should start with a capital"
 		     )
- }
+		     }
  
-	      @Inject extension ParseHelper<Domainmodel>
+ 	@Inject extension ParseHelper<Domainmodel>
+	@Inject extension ValidationTestHelper
 	     
-	     @Inject extension ValidationTestHelper
+     @Test
+     def parseDomainmodelInjected() {
+         "entity MyEntity {
+         parent: MyEntity
+         }".parse.assertNoIssues
+     }
 	     
-	     @Test
-	     def parseDomainmodelInjected() {
-	         "entity MyEntity {
-	         parent: MyEntity
-	         }".parse.assertNoIssues
-	     }
-	     
-	     @Test
-	     def testNameStartsWithCapitalWarningInjected() {
-	         "entity myEntity {
-	             parent: myEntity
-	         }".parse.assertWarning(
-	             DomainmodelPackage.Literals.ENTITY,
-	             DomainmodelValidator.INVALID_NAME,
-	             "Name should start with a capital"
-	         )
-	     }
+     @Test
+     def testNameStartsWithCapitalWarningInjected() {
+         "entity myEntity {
+             parent: myEntity
+         }".parse.assertWarning(
+             DomainmodelPackage.Literals.ENTITY,
+             DomainmodelValidator.INVALID_NAME,
+             "Name should start with a capital"
+         )
+     }
 	     
 	     
-	    @Inject extension CompilationTestHelper
+	@Inject extension CompilationTestHelper
+	@Test def test() {
+     '''
+     datatype String
      
-     	@Test def test() {
-         '''
-             datatype String
-    			
-             package my.company.blog {
-                 entity Blog {
-                     title: String
-                 }
-             }
-         '''.assertCompilesTo('''
-             package my.company.blog;
-     
-             public class Blog {
-                 private String title;
-    				
-                 public String getTitle() {
-                     return title;
-                 }
-    				
-                 public void setTitle(String title) {
-                     this.title = title;
-                 }
-             }
-         ''')
+     package my.company.blog {
+         entity Blog {
+             title: String
          }
+     }
+ '''.assertCompilesTo(
+ '''
+         package my.company.blog;
+         
+         public class Blog {
+             private String title;
+             
+             public String getTitle() {
+                 return title;
+             }
+             
+             public void setTitle(String title) {
+                 this.title = title;
+             }
+         }
+     '''
+     )
+     }
 }
